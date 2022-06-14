@@ -63,7 +63,4 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
             itemTitleTextView = binding.searchItemTitle;
         }
     }
-
-    // 3. Adapter overrides:
-    // TODO
 }

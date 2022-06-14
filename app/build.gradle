@@ -54,9 +54,7 @@ dependencies {
     // Picasso: displaying image
     implementation 'com.squareup.picasso:picasso:2.71828'
     // Swip like tinder
-    implementation "com.yuyakaido.android:card-stack-view:2.3.4"
-
-
+    implementation files("libs/card-stack-view-2.3.4.aar")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

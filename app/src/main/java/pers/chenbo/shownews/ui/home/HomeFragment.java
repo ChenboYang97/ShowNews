@@ -12,13 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
+import com.yuyakaido.android.cardstackview.CardStackListener;
+import com.yuyakaido.android.cardstackview.Direction;
+import com.yuyakaido.android.cardstackview.Duration;
+import com.yuyakaido.android.cardstackview.StackFrom;
+import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
+
+import java.util.List;
+
 import pers.chenbo.shownews.R;
+import pers.chenbo.shownews.databinding.FragmentHomeBinding;
+import pers.chenbo.shownews.model.Article;
 import pers.chenbo.shownews.repository.NewsRepository;
 import pers.chenbo.shownews.repository.NewsViewModelFactory;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements CardStackListener {
 
     private HomeViewModel viewModel;
+    private FragmentHomeBinding binding;
+    private CardStackLayoutManager cardStackLayoutManager;
+    private List<Article> articles;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,13 +42,25 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        // Inflate the layout xml for this fragment in a Java code
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        CardSwipeAdapter swipeAdapter = new CardSwipeAdapter();
+        cardStackLayoutManager = new CardStackLayoutManager(requireContext(), this);
+        // 实现了卡片的叠加可视效果
+        cardStackLayoutManager.setStackFrom(StackFrom.Top);
+        binding.homeCardStackView.setLayoutManager(cardStackLayoutManager);
+        binding.homeCardStackView.setAdapter(swipeAdapter);
+
+        // Handle like and dislike
+        binding.homeLikeButton.setOnClickListener(v -> swipeCard(Direction.Right));
+        binding.homeUnlikeButton.setOnClickListener(v -> swipeCard(Direction.Left));
 
         NewsRepository repository = new NewsRepository();
         viewModel = new ViewModelProvider(this, new NewsViewModelFactory(repository)).get(HomeViewModel.class);
@@ -46,9 +72,52 @@ public class HomeFragment extends Fragment {
                         newsResponse -> {
                             if (newsResponse != null) {
                                 Log.d("HomeFragment", newsResponse.toString());
+                                articles = newsResponse.articles;
+                                swipeAdapter.setArticles(articles);
                             }
                         });
+    }
 
+    private void swipeCard(Direction direction) {
+        SwipeAnimationSetting setting = new SwipeAnimationSetting.Builder()
+                .setDirection(direction)
+                .setDuration(Duration.Normal.duration)
+                .build();
+        cardStackLayoutManager.setSwipeAnimationSetting(setting);
+        binding.homeCardStackView.swipe();
+    }
+
+    @Override
+    public void onCardDragging(Direction direction, float v) {
+
+    }
+
+    @Override
+    public void onCardSwiped(Direction direction) {
+        if (direction == Direction.Left) {
+            Log.d("CardStackView", "Unliked " + cardStackLayoutManager.getTopPosition());
+        } else {
+            Log.d("CardStackView", "Liked "  + cardStackLayoutManager.getTopPosition());
+        }
+    }
+
+    @Override
+    public void onCardRewound() {
+
+    }
+
+    @Override
+    public void onCardCanceled() {
+
+    }
+
+    @Override
+    public void onCardAppeared(View view, int i) {
+
+    }
+
+    @Override
+    public void onCardDisappeared(View view, int i) {
 
     }
 }

@@ -1,10 +1,16 @@
 package pers.chenbo.shownews.repository;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.List;
+
+import pers.chenbo.shownews.ShowNewsApplication;
+import pers.chenbo.shownews.database.ShowNewsDatabase;
+import pers.chenbo.shownews.model.Article;
 import pers.chenbo.shownews.model.NewsResponse;
 import pers.chenbo.shownews.network.NewsApi;
 import pers.chenbo.shownews.network.RetrofitClient;
@@ -14,10 +20,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NewsRepository {
+
     private final NewsApi newsApi;
+    private final ShowNewsDatabase database;
+
     public NewsRepository() {
         newsApi = RetrofitClient.newInstance().create(NewsApi.class);
+        database = ShowNewsApplication.getDatabase();
     }
+
     public LiveData<NewsResponse> getTopHeadlines(String country) {
         MutableLiveData<NewsResponse> topHeadlinesLiveData = new MutableLiveData<>();
         Call<NewsResponse> responseCall = newsApi.getTopHeadlines(country, 20);
@@ -65,4 +76,46 @@ public class NewsRepository {
         });
         return everyThingLiveData;
     }
+
+    public LiveData<Boolean> favoriteArticle(Article article) {
+        MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
+        new FavoriteAsyncTask(database, resultLiveData).execute(article);
+        return resultLiveData;
+    }
+
+    private static class FavoriteAsyncTask extends AsyncTask<Article, Void, Boolean> {
+
+        private final ShowNewsDatabase database;
+        private final MutableLiveData<Boolean> liveData;
+
+        private FavoriteAsyncTask(ShowNewsDatabase database, MutableLiveData<Boolean> liveData) {
+            this.database = database;
+            this.liveData = liveData;
+        }
+
+        @Override
+        protected Boolean doInBackground(Article... articles) {
+            Article article = articles[0];
+            try {
+                database.articleDao().saveArticle(article);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            liveData.setValue(success);
+        }
+    }
+
+    public LiveData<List<Article>> getAllSavedArticles() {
+        return database.articleDao().getAllArticle();
+    }
+
+    public void deleteSavedArticle(Article article) {
+        AsyncTask.execute(() -> database.articleDao().deleteArticle(article));
+    }
+
 }

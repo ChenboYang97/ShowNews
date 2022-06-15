@@ -111,6 +111,8 @@ public class HomeFragment extends Fragment implements CardStackListener {
             Log.d("CardStackView", "Unliked " + cardStackLayoutManager.getTopPosition());
         } else {
             Log.d("CardStackView", "Liked "  + cardStackLayoutManager.getTopPosition());
+            Article article = articles.get(cardStackLayoutManager.getTopPosition() - 1);
+            viewModel.setFavoriteArticleInput(article);
         }
     }
 

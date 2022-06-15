@@ -20,7 +20,7 @@ public class NewsRepository {
     }
     public LiveData<NewsResponse> getTopHeadlines(String country) {
         MutableLiveData<NewsResponse> topHeadlinesLiveData = new MutableLiveData<>();
-        Call<NewsResponse> responseCall = newsApi.getTopHeadlines(country);
+        Call<NewsResponse> responseCall = newsApi.getTopHeadlines(country, 20);
         responseCall.enqueue(new Callback<NewsResponse>() {
             @Override
             public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {

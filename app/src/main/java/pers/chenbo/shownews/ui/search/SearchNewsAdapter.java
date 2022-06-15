@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.SearchNewsViewHolder> {
 
-    // 1. Supporting data:
+    // 1. Supporting data
     private List<Article> articles = new ArrayList<>();
     public void setArticles(List<Article> newsList) {
         articles.clear();
@@ -30,23 +30,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         notifyDataSetChanged();
     }
 
-    // 2. SearchNewsViewHolder:
-    @NonNull
-    @Override
-    public SearchNewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_news_item, parent, false);
-        return new SearchNewsViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull SearchNewsViewHolder holder, int position) {
-        Article article = articles.get(position);
-        holder.itemTitleTextView.setText(article.title);
-        if (article.urlToImage != null) {
-            Picasso.get().load(article.urlToImage).resize(200, 200).into(holder.itemImageView);
-        }
-    }
-
+    // 2. SearchNewsViewHolder
     @Override
     public int getItemCount() {
         return articles.size();
@@ -63,4 +47,22 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
             itemTitleTextView = binding.searchItemTitle;
         }
     }
+
+    // 3. Adapter Override
+    @NonNull
+    @Override
+    public SearchNewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_news_item, parent, false);
+        return new SearchNewsViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull SearchNewsViewHolder holder, int position) {
+        Article article = articles.get(position);
+        holder.itemTitleTextView.setText(article.title);
+        if (article.urlToImage != null) {
+            Picasso.get().load(article.urlToImage).resize(200, 200).into(holder.itemImageView);
+        }
+    }
+
 }

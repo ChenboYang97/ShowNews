@@ -20,7 +20,7 @@ import pers.chenbo.shownews.databinding.SwipeNewsCardBinding;
 import pers.chenbo.shownews.model.Article;
 
 public class CardSwipeAdapter extends RecyclerView.Adapter<CardSwipeAdapter.CardSwipeViewHolder> {
-    // 1. Supporting data:
+    // 1. Supporting data
     private List<Article> articles = new ArrayList<>();
     public void setArticles(List<Article> newsList) {
         articles.clear();
@@ -28,10 +28,25 @@ public class CardSwipeAdapter extends RecyclerView.Adapter<CardSwipeAdapter.Card
         notifyDataSetChanged();
     }
 
+    // 2. CardSwipeViewHolder
+    public class CardSwipeViewHolder extends RecyclerView.ViewHolder {
+        ImageView itemImageView;
+        TextView titleTextView;
+        TextView descriptionTextView;
+
+        public CardSwipeViewHolder(@NonNull View itemView) {
+            super(itemView);
+            SwipeNewsCardBinding binding = SwipeNewsCardBinding.bind(itemView);
+            itemImageView = binding.swipeCardImageView;
+            titleTextView = binding.swipeCardTitle;
+            descriptionTextView = binding.swipeCardDescription;
+        }
+    }
+
+    // 3. Adapter Override
     @NonNull
     @Override
     public CardSwipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // 帮助把linear layout定义的xml文件转化为java文件
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_news_card, parent, false);
         return new CardSwipeViewHolder(view);
     }
@@ -49,19 +64,5 @@ public class CardSwipeAdapter extends RecyclerView.Adapter<CardSwipeAdapter.Card
     @Override
     public int getItemCount() {
         return articles.size();
-    }
-
-    public class CardSwipeViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImageView;
-        TextView titleTextView;
-        TextView descriptionTextView;
-
-        public CardSwipeViewHolder(@NonNull View itemView) {
-            super(itemView);
-            SwipeNewsCardBinding binding = SwipeNewsCardBinding.bind(itemView);
-            itemImageView = binding.swipeCardImageView;
-            titleTextView = binding.swipeCardTitle;
-            descriptionTextView = binding.swipeCardDescription;
-        }
     }
 }

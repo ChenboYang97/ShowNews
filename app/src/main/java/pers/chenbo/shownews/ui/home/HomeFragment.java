@@ -11,11 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.Duration;
+import com.yuyakaido.android.cardstackview.RewindAnimationSetting;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 
@@ -42,7 +44,7 @@ public class HomeFragment extends Fragment implements CardStackListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout xml for this fragment in a Java code
+        // Inflate means reading a layout xml to translate them in Java code
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -61,6 +63,7 @@ public class HomeFragment extends Fragment implements CardStackListener {
         // Handle like and dislike
         binding.homeLikeButton.setOnClickListener(v -> swipeCard(Direction.Right));
         binding.homeUnlikeButton.setOnClickListener(v -> swipeCard(Direction.Left));
+        binding.homeRewindButton.setOnClickListener(v -> stepBack(Direction.Bottom));
 
         NewsRepository repository = new NewsRepository();
         viewModel = new ViewModelProvider(this, new NewsViewModelFactory(repository)).get(HomeViewModel.class);
@@ -85,6 +88,16 @@ public class HomeFragment extends Fragment implements CardStackListener {
                 .build();
         cardStackLayoutManager.setSwipeAnimationSetting(setting);
         binding.homeCardStackView.swipe();
+    }
+
+    private void stepBack(Direction direction) {
+        RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
+                .setDirection(direction)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(new DecelerateInterpolator())
+                .build();
+        cardStackLayoutManager.setRewindAnimationSetting(setting);
+        binding.homeCardStackView.rewind();
     }
 
     @Override

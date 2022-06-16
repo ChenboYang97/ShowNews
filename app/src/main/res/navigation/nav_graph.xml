@@ -10,14 +10,35 @@
         android:name="pers.chenbo.shownews.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
+
     <fragment
         android:id="@+id/navigation_save"
         android:name="pers.chenbo.shownews.ui.save.SaveFragment"
         android:label="@string/title_save"
-        tools:layout="@layout/fragment_save" />
+        tools:layout="@layout/fragment_save" >
+        <action
+            android:id="@+id/action_navigation_save_to_navigation_detail"
+            app:destination="@id/navigation_detail"/>
+    </fragment>
+
     <fragment
         android:id="@+id/navigation_search"
         android:name="pers.chenbo.shownews.ui.search.SearchFragment"
         android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_detail"
+            app:destination="@id/navigation_detail"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="pers.chenbo.shownews.ui.details.DetailFragment"
+        android:label="@string/title_detail"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="article"
+            app:argType="pers.chenbo.shownews.model.Article" />
+    </fragment>
+
 </navigation>

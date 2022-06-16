@@ -15,6 +15,7 @@ public class SearchViewModel extends ViewModel {
     public SearchViewModel(NewsRepository repository) {
         this.repository = repository;
     }
+
     public void setSearchInput(String query) {
         searchInput.setValue(query);
     }

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,10 +46,10 @@ public class SaveFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SavedNewsAdapter savedNewsAdapter = new SavedNewsAdapter();
+        SavedNewsAdapter newsAdapter = new SavedNewsAdapter();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         binding.newsSavedRecyclerView.setLayoutManager(linearLayoutManager);
-        binding.newsSavedRecyclerView.setAdapter(savedNewsAdapter);
+        binding.newsSavedRecyclerView.setAdapter(newsAdapter);
 
         NewsRepository repository = new NewsRepository();
         viewModel = new ViewModelProvider(this, new NewsViewModelFactory(repository)).get(SaveViewModel.class);
@@ -59,15 +60,15 @@ public class SaveFragment extends Fragment {
                         savedArticles -> {
                             if (savedArticles != null) {
                                 Log.d("SaveFragment", savedArticles.toString());
-                                savedNewsAdapter.setArticles(savedArticles);
+                                newsAdapter.setArticles(savedArticles);
                             }
                         });
 
-        savedNewsAdapter.setItemCallback(new SavedNewsAdapter.ItemCallback() {
+        newsAdapter.setItemCallback(new SavedNewsAdapter.ItemCallback() {
             @Override
             public void onOpenDetails(Article article) {
-                // TODO
-                Log.d("onOpenDetails", article.toString());
+                SaveFragmentDirections.ActionNavigationSaveToNavigationDetail direction = SaveFragmentDirections.actionNavigationSaveToNavigationDetail(article);
+                NavHostFragment.findNavController(SaveFragment.this).navigate(direction);
             }
 
             @Override

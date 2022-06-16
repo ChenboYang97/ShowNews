@@ -14,6 +14,7 @@ import pers.chenbo.shownews.databinding.ActivityMainBinding;
 import pers.chenbo.shownews.databinding.FragmentSaveBinding;
 import pers.chenbo.shownews.databinding.SearchNewsItemBinding;
 import pers.chenbo.shownews.model.Article;
+import pers.chenbo.shownews.ui.save.SavedNewsAdapter;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.SearchNewsViewHolder> {
+
+    interface ItemCallback {
+        void onOpenDetails(Article article);
+    }
 
     // 1. Supporting data
     private List<Article> articles = new ArrayList<>();
@@ -30,25 +35,16 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         notifyDataSetChanged();
     }
 
-    // 2. SearchNewsViewHolder
+    private ItemCallback itemCallback;
+    public void setItemCallback(ItemCallback itemCallback) {
+        this.itemCallback = itemCallback;
+    }
+
+    // 2. Adapter Override
     @Override
     public int getItemCount() {
         return articles.size();
     }
-
-    public class SearchNewsViewHolder extends RecyclerView.ViewHolder {
-        ImageView itemImageView;
-        TextView itemTitleTextView;
-
-        public SearchNewsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            SearchNewsItemBinding binding = SearchNewsItemBinding.bind(itemView);
-            itemImageView = binding.searchItemImage;
-            itemTitleTextView = binding.searchItemTitle;
-        }
-    }
-
-    // 3. Adapter Override
     @NonNull
     @Override
     public SearchNewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,6 +59,20 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         if (article.urlToImage != null) {
             Picasso.get().load(article.urlToImage).resize(200, 200).into(holder.itemImageView);
         }
+
+        holder.itemView.setOnClickListener(v -> itemCallback.onOpenDetails(article));
     }
 
+    // 3. SearchNewsViewHolder
+    public class SearchNewsViewHolder extends RecyclerView.ViewHolder {
+        ImageView itemImageView;
+        TextView itemTitleTextView;
+
+        public SearchNewsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            SearchNewsItemBinding binding = SearchNewsItemBinding.bind(itemView);
+            itemImageView = binding.searchItemImage;
+            itemTitleTextView = binding.searchItemTitle;
+        }
+    }
 }

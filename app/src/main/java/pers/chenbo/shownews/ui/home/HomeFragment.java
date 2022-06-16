@@ -117,22 +117,11 @@ public class HomeFragment extends Fragment implements CardStackListener {
     }
 
     @Override
-    public void onCardRewound() {
-
-    }
-
+    public void onCardRewound() {}
     @Override
-    public void onCardCanceled() {
-
-    }
-
+    public void onCardCanceled() {}
     @Override
-    public void onCardAppeared(View view, int i) {
-
-    }
-
+    public void onCardAppeared(View view, int i) {}
     @Override
-    public void onCardDisappeared(View view, int i) {
-
-    }
+    public void onCardDisappeared(View view, int i) {}
 }

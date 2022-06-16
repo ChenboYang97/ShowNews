@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.util.Log;
@@ -16,8 +17,12 @@ import android.view.ViewGroup;
 
 import pers.chenbo.shownews.R;
 import pers.chenbo.shownews.databinding.FragmentSearchBinding;
+import pers.chenbo.shownews.model.Article;
 import pers.chenbo.shownews.repository.NewsRepository;
 import pers.chenbo.shownews.repository.NewsViewModelFactory;
+import pers.chenbo.shownews.ui.save.SaveFragment;
+import pers.chenbo.shownews.ui.save.SaveFragmentDirections;
+import pers.chenbo.shownews.ui.save.SavedNewsAdapter;
 
 public class SearchFragment extends Fragment {
 
@@ -72,6 +77,14 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
+            }
+        });
+
+        newsAdapter.setItemCallback(new SearchNewsAdapter.ItemCallback() {
+            @Override
+            public void onOpenDetails(Article article) {
+                SearchFragmentDirections.ActionNavigationSearchToNavigationDetail direction = SearchFragmentDirections.actionNavigationSearchToNavigationDetail(article);
+                NavHostFragment.findNavController(SearchFragment.this).navigate(direction);
             }
         });
     }

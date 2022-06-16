@@ -26,12 +26,15 @@ public class SavedNewsAdapter extends RecyclerView.Adapter<SavedNewsAdapter.Save
 
     // 1. Supporting data:
     private List<Article> articles = new ArrayList<>();
-    private ItemCallback itemCallback;
-
     public void setArticles(List<Article> newsList) {
         articles.clear();
         articles.addAll(newsList);
         notifyDataSetChanged();
+    }
+
+    private ItemCallback itemCallback;
+    public void setItemCallback(ItemCallback itemCallback) {
+        this.itemCallback = itemCallback;
     }
 
     // 2. Adapter overrides:
@@ -41,7 +44,6 @@ public class SavedNewsAdapter extends RecyclerView.Adapter<SavedNewsAdapter.Save
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_news_item, parent, false);
         return new SavedNewsViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull SavedNewsViewHolder holder, int position) {
         Article article = articles.get(position);
@@ -51,7 +53,6 @@ public class SavedNewsAdapter extends RecyclerView.Adapter<SavedNewsAdapter.Save
         holder.favoriteIcon.setOnClickListener(v -> itemCallback.onRemoveFavorite(article));
         holder.itemView.setOnClickListener(v -> itemCallback.onOpenDetails(article));
     }
-
     @Override
     public int getItemCount() {
         return articles.size();
@@ -72,9 +73,4 @@ public class SavedNewsAdapter extends RecyclerView.Adapter<SavedNewsAdapter.Save
             favoriteIcon = binding.savedItemFavoriteImageView;
         }
     }
-
-    public void setItemCallback(ItemCallback itemCallback) {
-        this.itemCallback = itemCallback;
-    }
-
 }

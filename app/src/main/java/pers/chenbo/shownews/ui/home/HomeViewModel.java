@@ -18,6 +18,7 @@ public class HomeViewModel extends ViewModel {
         this.repository = newsRepository;
     }
 
+    // event
     public void setCountryInput(String country) {
         countryInput.setValue(country);
     }
@@ -26,6 +27,7 @@ public class HomeViewModel extends ViewModel {
         return Transformations.switchMap(countryInput, repository::getTopHeadlines);
     }
 
+    // event
     public void setFavoriteArticleInput(Article article) {
         repository.favoriteArticle(article);
     }

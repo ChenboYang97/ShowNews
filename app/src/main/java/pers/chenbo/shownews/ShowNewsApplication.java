@@ -6,6 +6,7 @@ import androidx.room.Room;
 
 import pers.chenbo.shownews.database.ShowNewsDatabase;
 
+// singleton app最开始运行创建的
 public class ShowNewsApplication extends Application {
 
     private static ShowNewsDatabase database;

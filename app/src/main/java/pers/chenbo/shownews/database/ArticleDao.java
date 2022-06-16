@@ -16,6 +16,7 @@ public interface ArticleDao {
     @Insert
     void saveArticle(Article article);
 
+    // 只有这个query, 默认放到background thread执行
     @Query("SELECT * FROM article")
     LiveData<List<Article>> getAllArticle();
 

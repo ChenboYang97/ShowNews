@@ -1,4 +1,6 @@
 package pers.chenbo.shownews.network;
+import android.util.Log;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -18,11 +20,12 @@ public class RetrofitClient {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new HeaderInterceptor())
                 .build();
-        return new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
+        return retrofit;
     }
 
     private static class HeaderInterceptor implements Interceptor {

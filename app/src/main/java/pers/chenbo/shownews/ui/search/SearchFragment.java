@@ -9,20 +9,19 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import pers.chenbo.shownews.R;
 import pers.chenbo.shownews.databinding.FragmentSearchBinding;
 import pers.chenbo.shownews.model.Article;
 import pers.chenbo.shownews.repository.NewsRepository;
 import pers.chenbo.shownews.repository.NewsViewModelFactory;
-import pers.chenbo.shownews.ui.save.SaveFragment;
-import pers.chenbo.shownews.ui.save.SaveFragmentDirections;
-import pers.chenbo.shownews.ui.save.SavedNewsAdapter;
 
 public class SearchFragment extends Fragment {
 
@@ -47,8 +46,8 @@ public class SearchFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         SearchNewsAdapter newsAdapter = new SearchNewsAdapter();
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2);
-        binding.newsResultsRecyclerView.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        binding.newsResultsRecyclerView.setLayoutManager(linearLayoutManager);
         binding.newsResultsRecyclerView.setAdapter(newsAdapter);
 
         NewsRepository repository = new NewsRepository();

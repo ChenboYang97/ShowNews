@@ -1,6 +1,8 @@
 package pers.chenbo.shownews;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.nav_host_fragment);
+                .findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
         NavigationUI.setupWithNavController(navView, navController);
@@ -58,10 +60,8 @@ public class MainActivity extends AppCompatActivity {
         // callback.onResponse(response)
         // otherwise, callback.onFailure(response)
     }
-
     @Override
     public boolean onSupportNavigateUp() {
         return navController.navigateUp();
     }
-
 }

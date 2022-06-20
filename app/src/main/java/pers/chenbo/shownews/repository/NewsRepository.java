@@ -23,15 +23,17 @@ public class NewsRepository {
 
     private final NewsApi newsApi;
     private final ShowNewsDatabase database;
+    public static final String COUNTRY_INPUT = "us";
+    public static final int PAGE_SIZE = 20;
 
     public NewsRepository() {
         newsApi = RetrofitClient.newInstance().create(NewsApi.class);
         database = ShowNewsApplication.getDatabase();
     }
 
-    public LiveData<NewsResponse> getTopHeadlines(String country) {
+    public LiveData<NewsResponse> getTopHeadlines(int page) {
         MutableLiveData<NewsResponse> topHeadlinesLiveData = new MutableLiveData<>();
-        Call<NewsResponse> responseCall = newsApi.getTopHeadlines(country, 20);
+        Call<NewsResponse> responseCall = newsApi.getTopHeadlines(COUNTRY_INPUT, PAGE_SIZE, page);
         responseCall.enqueue(new Callback<NewsResponse>() {
             @Override
             public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
@@ -53,9 +55,9 @@ public class NewsRepository {
         return topHeadlinesLiveData;
     }
 
-    public LiveData<NewsResponse> searchNews(String country) {
+    public LiveData<NewsResponse> searchNews(String query) {
         MutableLiveData<NewsResponse> everyThingLiveData = new MutableLiveData<>();
-        Call<NewsResponse> responseCall = newsApi.getEverything(country, 40);
+        Call<NewsResponse> responseCall = newsApi.getEverything(query, PAGE_SIZE);
         responseCall.enqueue(new Callback<NewsResponse>() {
             @Override
             public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {

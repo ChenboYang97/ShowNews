@@ -1,5 +1,7 @@
 package pers.chenbo.shownews.ui.home;
 
+import static pers.chenbo.shownews.repository.NewsRepository.PAGE_SIZE;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,7 +25,6 @@ import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 
 import java.util.List;
 
-import pers.chenbo.shownews.R;
 import pers.chenbo.shownews.databinding.FragmentHomeBinding;
 import pers.chenbo.shownews.model.Article;
 import pers.chenbo.shownews.repository.NewsRepository;
@@ -34,6 +35,7 @@ public class HomeFragment extends Fragment implements CardStackListener {
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
     private CardStackLayoutManager cardStackLayoutManager;
+    private CardSwipeAdapter cardSwipeAdapter;
     private List<Article> articles;
 
     @Override
@@ -53,32 +55,38 @@ public class HomeFragment extends Fragment implements CardStackListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        CardSwipeAdapter swipeAdapter = new CardSwipeAdapter();
-        cardStackLayoutManager = new CardStackLayoutManager(requireContext(), this);
-        // 实现了卡片的叠加可视效果
-        cardStackLayoutManager.setStackFrom(StackFrom.Top);
-        binding.homeCardStackView.setLayoutManager(cardStackLayoutManager);
-        binding.homeCardStackView.setAdapter(swipeAdapter);
-
         // Handle like and dislike
         binding.homeLikeButton.setOnClickListener(v -> swipeCard(Direction.Right));
         binding.homeUnlikeButton.setOnClickListener(v -> swipeCard(Direction.Left));
         binding.homeRewindButton.setOnClickListener(v -> stepBack(Direction.Bottom));
 
+        cardSwipeAdapter = new CardSwipeAdapter();
+        cardStackLayoutManager = new CardStackLayoutManager(requireContext(), this);
+        // 实现了卡片的叠加可视效果
+        cardStackLayoutManager.setStackFrom(StackFrom.Top);
+        binding.homeCardStackView.setLayoutManager(cardStackLayoutManager);
+        binding.homeCardStackView.setAdapter(cardSwipeAdapter);
+
         NewsRepository repository = new NewsRepository();
         viewModel = new ViewModelProvider(this, new NewsViewModelFactory(repository)).get(HomeViewModel.class);
-        viewModel.setCountryInput("us");
-        viewModel
-                .getTopHeadlines()
+        if (!viewModel.isFetched()) {
+            viewModel.setPageInput(1);
+        }
+        viewModel.getTopHeadlines()
                 .observe(
-                        getViewLifecycleOwner(),
-                        newsResponse -> {
-                            if (newsResponse != null) {
-                                Log.d("HomeFragment", newsResponse.toString());
-                                articles = newsResponse.articles;
-                                swipeAdapter.setArticles(articles);
-                            }
-                        });
+                getViewLifecycleOwner(),
+                newsResponse -> {
+                    if (newsResponse != null) {
+                        Log.d("HomeFragment", newsResponse.toString());
+                        articles = newsResponse.articles;
+                        cardSwipeAdapter.setArticles(articles);
+                    }
+                    if (savedInstanceState != null && savedInstanceState.containsKey("leavePosition")) {
+                        Log.d("CardStackView", "position " + savedInstanceState.getInt("leavePosition"));
+                        cardStackLayoutManager.scrollToPosition(savedInstanceState.getInt("leavePosition"));
+                        savedInstanceState.remove("leavePosition");
+                    }
+                });
     }
 
     private void swipeCard(Direction direction) {
@@ -101,21 +109,23 @@ public class HomeFragment extends Fragment implements CardStackListener {
     }
 
     @Override
-    public void onCardDragging(Direction direction, float v) {
-
-    }
-
-    @Override
     public void onCardSwiped(Direction direction) {
+        // based on the direction of swiping, delete if exists (left) or save if not exists
+        Article article = articles.get(cardStackLayoutManager.getTopPosition() - 1);
         if (direction == Direction.Left) {
             Log.d("CardStackView", "Unliked " + cardStackLayoutManager.getTopPosition());
+            viewModel.deleteSavedArticle(article);
         } else {
-            Log.d("CardStackView", "Liked "  + cardStackLayoutManager.getTopPosition());
-            Article article = articles.get(cardStackLayoutManager.getTopPosition() - 1);
+            Log.d("CardStackView", "Liked " + cardStackLayoutManager.getTopPosition());
             viewModel.setFavoriteArticleInput(article);
+        }
+        if (cardStackLayoutManager.getTopPosition() == PAGE_SIZE) {
+            viewModel.setPageIncrementByOne();
         }
     }
 
+    @Override
+    public void onCardDragging(Direction direction, float v) {}
     @Override
     public void onCardRewound() {}
     @Override
@@ -124,4 +134,12 @@ public class HomeFragment extends Fragment implements CardStackListener {
     public void onCardAppeared(View view, int i) {}
     @Override
     public void onCardDisappeared(View view, int i) {}
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d("lifecycle-fragment","onSaveInstanceState");
+        Integer leavePosition = Integer.valueOf(cardStackLayoutManager.getTopPosition());
+        outState.putInt("leavePosition", leavePosition);
+        super.onSaveInstanceState(outState);
+    }
 }

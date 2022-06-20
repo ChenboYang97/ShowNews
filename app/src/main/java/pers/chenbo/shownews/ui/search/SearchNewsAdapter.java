@@ -59,6 +59,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         if (article.urlToImage != null) {
             Picasso.get().load(article.urlToImage).resize(200, 200).into(holder.itemImageView);
         }
+//        holder.itemSourceTextView.setText(article.author);
 
         holder.itemView.setOnClickListener(v -> itemCallback.onOpenDetails(article));
     }
@@ -67,12 +68,14 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
     public class SearchNewsViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImageView;
         TextView itemTitleTextView;
+//        TextView itemSourceTextView;
 
         public SearchNewsViewHolder(@NonNull View itemView) {
             super(itemView);
             SearchNewsItemBinding binding = SearchNewsItemBinding.bind(itemView);
             itemImageView = binding.searchItemImage;
             itemTitleTextView = binding.searchItemTitle;
+//            itemSourceTextView = binding.searchItemSourceFrom;
         }
     }
 }

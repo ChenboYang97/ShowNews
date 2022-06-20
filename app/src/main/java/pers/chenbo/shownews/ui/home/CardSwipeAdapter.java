@@ -1,5 +1,6 @@
 package pers.chenbo.shownews.ui.home;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,17 +48,21 @@ public class CardSwipeAdapter extends RecyclerView.Adapter<CardSwipeAdapter.Card
     @NonNull
     @Override
     public CardSwipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d("Creating-ViewHolder", Integer.valueOf(viewType).toString());
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_news_card, parent, false);
         return new CardSwipeViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CardSwipeViewHolder holder, int position) {
+        Log.d("Binding-ViewHolder", Integer.valueOf(position).toString());
         Article article = articles.get(position);
         holder.titleTextView.setText(article.title);
         holder.descriptionTextView.setText(article.description);
-        if (article.urlToImage != null) {
-            Picasso.get().load(article.urlToImage).resize(200, 200).into(holder.itemImageView);
+        String url = article.urlToImage;
+        if (url != null) {
+            Log.d("isImageEmpty", url);
+            Picasso.get().load(url).resize(200, 200).into(holder.itemImageView);
         }
     }
 

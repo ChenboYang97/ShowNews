@@ -10,7 +10,7 @@ public interface NewsApi {
 
     @GET("everything")
     Call<NewsResponse> getEverything(
-            @Query("q") String query, @Query("pageSize") int pageSize);
+            @Query("q") String query, @Query("pageSize") int pageSize, @Query("sortBy") String sortBy, @Query("language") String language);
 
     @GET("top-headlines")
     Call<NewsResponse> getTopHeadlines(

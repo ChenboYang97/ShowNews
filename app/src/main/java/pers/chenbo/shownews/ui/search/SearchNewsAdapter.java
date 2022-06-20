@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.SearchNewsViewHolder> {
 
@@ -59,7 +60,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
         if (article.urlToImage != null) {
             Picasso.get().load(article.urlToImage).resize(200, 200).into(holder.itemImageView);
         }
-//        holder.itemSourceTextView.setText(article.author);
+        holder.itemSourceTextView.setText(article.publishedAt.substring(0, 10));
 
         holder.itemView.setOnClickListener(v -> itemCallback.onOpenDetails(article));
     }
@@ -68,14 +69,14 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
     public class SearchNewsViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImageView;
         TextView itemTitleTextView;
-//        TextView itemSourceTextView;
+        TextView itemSourceTextView;
 
         public SearchNewsViewHolder(@NonNull View itemView) {
             super(itemView);
             SearchNewsItemBinding binding = SearchNewsItemBinding.bind(itemView);
             itemImageView = binding.searchItemImage;
             itemTitleTextView = binding.searchItemTitle;
-//            itemSourceTextView = binding.searchItemSourceFrom;
+            itemSourceTextView = binding.searchItemSourceFrom;
         }
     }
 }
